@@ -2,13 +2,12 @@ package db
 
 import (
 	"github.com/jinzhu/gorm"
-	"xhyl/model"
 )
 
 func NewMysqlDb() (db *gorm.DB) {
 	var err error
 	//连接串
-	db, err = gorm.Open("mysql", "root:wolaoda.sheigandong@tcp(127.0.0.1:3306)/comprehensive?charset=utf8")
+	db, err = gorm.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/distrlock?charset=utf8")
 	//defer db.Close()
 	if err != nil {
 		panic(err)
@@ -27,12 +26,11 @@ func NewMysqlDb() (db *gorm.DB) {
 }
 
 func InitTable() {
-	CreateTalbe(model.User{})
-	CreateTalbe(model.Like{})
+
 }
 
 func CreateTalbe(v interface{}) {
-	msdb := GetMysqlDb()
+	msdb := NewMysqlDb()
 	defer msdb.Close()
 	//判断表是否存在，不存在则创建
 	if !msdb.HasTable(v) {

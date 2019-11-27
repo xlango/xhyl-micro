@@ -14,7 +14,7 @@ func init() {
 	clearTimeoutLockTask()
 }
 
-type MysqlLock struct {
+type MethodLock struct {
 	Id         int64     `gorm:"primary_key"`
 	MethodName string    `gorm:"type:varchar(20);not null;column:method_name;"` //添加唯一索引
 	Desc       string    `gorm:"type:varchar(256);"`
@@ -23,7 +23,7 @@ type MysqlLock struct {
 
 //获取分布式锁（向mysql插入一条数据，如果插入成功则表示获取锁成功）
 func SetMysqlLock(method string, desc ...string) {
-	mysqlLock := MysqlLock{
+	mysqlLock := MethodLock{
 		MethodName: method,
 	}
 	for {
@@ -40,23 +40,24 @@ func ReleaseMysqlLock(method string) {
 	deleteLock(method)
 }
 
-func insertLock(lock MysqlLock) bool {
+func insertLock(lock MethodLock) bool {
 	mysqlDb := db.NewMysqlDb()
 	defer mysqlDb.Close()
 
-	errs := mysqlDb.Create(&lock).GetErrors()
-	if len(errs) > 0 {
-		return false
-	}
+	//if err := mysqlDb.Create(&lock).Error; err != nil {
+	//	return false
+	//}
+	//
+	//return true
 
-	return true
+	return mysqlDb.NewRecord(&lock)
 }
 
 func deleteLock(method string) {
 	mysqlDb := db.NewMysqlDb()
 	defer mysqlDb.Close()
 
-	mysqlDb.Delete(MysqlLock{}, "method_name = ?", method)
+	mysqlDb.Delete(MethodLock{}, "method_name = ?", method)
 }
 
 //定时清除超时的锁
@@ -67,10 +68,8 @@ func clearTimeoutLockTask() {
 		mysqlDb := db.NewMysqlDb()
 		defer mysqlDb.Close()
 
-		mysqlDb.Delete(MysqlLock{}, "TIMESTAMPDIFF(SECOND,update_time,NOW()) > 5")
-
+		mysqlDb.Delete(MethodLock{}, "TIMESTAMPDIFF(SECOND,update_time,NOW()) > 5")
+		//fmt.Println("cron err: ",err)
 	})
 	c.Start()
-
-	select {}
 }

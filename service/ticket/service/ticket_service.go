@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"xhyl-micro/service/common/lock/db"
 	"xhyl-micro/service/ticket/proto"
 )
@@ -16,9 +17,10 @@ func NewTicketService() *TicketService {
 func (t *TicketService) Buy(ctx context.Context, in *ticket.TicketRequest) (*ticket.TicketResponse, error) {
 
 	lock.SetMysqlLock("ticket.buy")
+	fmt.Printf("%v用户请求获取到锁\n", in.Username)
 	defer lock.ReleaseMysqlLock("ticket.buy")
 
 	return &ticket.TicketResponse{
-		Ticket: "1",
+		Ticket: "票" + in.Username,
 	}, nil
 }
