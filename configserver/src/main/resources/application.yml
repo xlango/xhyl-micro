@@ -14,7 +14,9 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/xbox1994/GoMicroConfig.git
+          uri: https://github.com/xx132917/config.git
+          #uri: https://github.com/xbox1994/GoMicroConfig.git
           searchPaths: '{application}/{profile}'
 server:
   port: 8081
+

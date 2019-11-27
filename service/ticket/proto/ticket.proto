@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+
+service Ticket {
+    rpc Buy (TicketRequest) returns (TicketResponse) {
+    };
+}
+
+message TicketRequest {
+    string username = 1;
+}
+
+message TicketResponse {
+    string ticket = 1;
+}
