@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
@@ -35,7 +34,7 @@ func main() {
 		micro.Name(micro_name.MicroNameTicket),
 		micro.Version("v1.0.0"),
 		micro.Registry(reg),
-		micro.RegisterInterval(30*time.Second),
+		micro.RegisterInterval(15*time.Second),
 		micro.RegisterTTL(30*time.Second),
 	)
 
@@ -46,10 +45,4 @@ func main() {
 	if err := ticketService.Run(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func registryOptions(ops *registry.Options) {
-	ops.Timeout = time.Second * 30
-	ops.Secure = true
-	ops.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 }

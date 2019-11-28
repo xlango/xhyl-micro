@@ -22,14 +22,14 @@ func main() {
 	userService := micro.NewService(
 		micro.Name(micro_name.MicroNameUser),
 		micro.Registry(reg),
-		micro.RegisterInterval(30*time.Second),
+		micro.RegisterInterval(15*time.Second),
 		micro.RegisterTTL(30*time.Second),
 	)
 	userService.Init()
 
 	ticketClient := ticket.NewTicketService(micro_name.MicroNameTicket, userService.Client())
 
-	for i := 0; i < 25; i++ {
+	for i := 0; i < 40; i++ {
 		go func(j int) {
 			res, err := ticketClient.Buy(context.TODO(), &ticket.TicketRequest{Username: fmt.Sprintf("xxx%d", j)})
 			if err != nil {
