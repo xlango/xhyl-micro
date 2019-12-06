@@ -35,7 +35,7 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Println(res.Ticket)
+				fmt.Printf(res.Ticket)
 			}
 		}(i)
 	}
